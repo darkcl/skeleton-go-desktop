@@ -1,7 +1,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { IPCRenderer } from "./ipc";
 
 declare var external;
+
+declare global {
+  interface Window {
+    renderer: IPCRenderer;
+  }
+}
+
 const render = () =>
   ReactDOM.render(
     <div>
@@ -17,5 +25,13 @@ window.onclick = function(e) {
     external.invoke("openlink: " + elem.getAttribute("href"));
   }
 };
+
+window.renderer = new IPCRenderer();
+
+window.renderer.on("testing", (event, value) => {
+  console.log("Receive from go backend");
+  console.log(event);
+  console.log(value);
+});
 
 render();

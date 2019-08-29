@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/darkcl/skeleton-go-desktop/ipc"
+
 	"github.com/darkcl/skeleton-go-desktop/helpers"
 	webview "github.com/darkcl/webview"
 	"github.com/leaanthony/mewn"
@@ -17,6 +19,9 @@ func handleRPC(w webview.WebView, data string) {
 	case strings.HasPrefix(data, "openlink: "):
 		url := strings.TrimPrefix(data, "openlink: ")
 		helpers.OpenBrowser(url)
+	case strings.HasPrefix(data, "testing: "):
+		ipcMain := ipc.SharedMain()
+		ipcMain.Send("testing", map[string]string{"testing": "testing"})
 	default:
 		panic("Not Implemented")
 	}
@@ -59,6 +64,9 @@ func main() {
 		Debug:                  true,
 	})
 	defer w.Exit()
+
+	ipcMain := ipc.SharedMain()
+	ipcMain.SetView(w)
 
 	w.Run()
 }
