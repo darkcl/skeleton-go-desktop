@@ -1,3 +1,5 @@
+import { IMessage } from "./message";
+
 declare var external;
 
 type RendererCallback = (event: string, value: any) => void;
@@ -5,8 +7,8 @@ type RendererCallback = (event: string, value: any) => void;
 export class IPCRenderer {
   constructor(private eventTable: { [key: string]: RendererCallback } = {}) {}
 
-  public send(event: string, value: any) {
-    external.invoke(`${event}:${JSON.stringify(value)}`);
+  public send(message: IMessage) {
+    external.invoke(JSON.stringify(message));
   }
 
   public on(event: string, callback: RendererCallback) {
